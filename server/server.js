@@ -14,7 +14,7 @@ var port = 3000;
 app.post('/todos',(req,res)=>{
   // console.log(req.body);
   var todo = new Todo({
-    text:req.body.text
+    text:req.body.text //the bodyParser is used here.
   });
 
   todo.save().then((doc)=>{
@@ -36,3 +36,5 @@ app.get('/',(req,res)=>{
 app.listen(port, ()=>{
   console.log(`Starting server at port ${port}` );
 })
+
+module.exports = {app}
