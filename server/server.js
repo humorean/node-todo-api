@@ -31,7 +31,7 @@ app.get('/todos',(req,res)=>{
   },(err)=>{
     res.status(400).send(err)
   })
-})
+});
 
 app.get('/',(req,res)=>{
   res.send("hello")
