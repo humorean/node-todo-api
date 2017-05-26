@@ -26,7 +26,11 @@ app.post('/todos',(req,res)=>{
 
 //GET
 app.get('/todos',(req,res)=>{
-  // console.log(res)
+  Todo.find().then((todos)=>{
+    res.send({todos})
+  },(err)=>{
+    res.status(400).send(err)
+  })
 })
 
 app.get('/',(req,res)=>{
