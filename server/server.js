@@ -1,9 +1,11 @@
 var express = require('express');
 var bodyParser = require('body-parser'); //take json and convert into object
+var {ObjectID} = require('mongodb')
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+
 
 var app=express();
 app.use(bodyParser.json());
@@ -24,14 +26,38 @@ app.post('/todos',(req,res)=>{
   });
 });
 
-//GET
-app.get('/todos',(req,res)=>{
+//GET /todos/
+app.get('/todos/',(req,res)=>{
   Todo.find().then((todos)=>{
     res.send({todos})
   },(err)=>{
     res.status(400).send(err)
   })
 });
+
+//GET /todos/_id
+app.get('/todos/:id',(req,res)=>{
+  var id = req.params.id;
+  //first validate id
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send('404 Error.  Make sure your url is correct');
+  }
+
+  Todo.findById(id).then((todo)=>{
+    if(!todo){
+      return res.status(404).send('Record not found')
+    }
+    res.send({todo})
+  }).catch((err)=>{
+    res.send(err)
+  })
+
+
+
+  //findByID //success => todo?sendback:send 404 with empty
+  //error 400 and send empty body back
+
+})
 
 app.get('/',(req,res)=>{
   res.send("hello")
