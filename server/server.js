@@ -77,8 +77,6 @@ app.delete('/todos/:id',(req,res)=>{
 //use app.patch to update a record
 app.patch('/todos/:id',(req,res)=>{
   var id = req.params.id;
-  console.log(id);
-  console.log(req);
   //dont let user update anything they choose body = {'text','complete'}
   var body = _.pick(req.body,['text','completed']);
 
@@ -88,7 +86,7 @@ app.patch('/todos/:id',(req,res)=>{
 
   //based on completed status
   if(_.isBoolean(body.completed) && body.completed){
-    body.comopletedAt = new Date().getTime();
+    body.completedAt = new Date().getTime();
   }else{
     body.completed = false;
     body.completedAt = null;
