@@ -10,7 +10,7 @@ var {User} = require('./models/user');
 var app=express();
 app.use(bodyParser.json());
 
-var port = 3000;
+var port = process.env.PORT || 3000;
 
 //POST
 app.post('/todos',(req,res)=>{
@@ -51,12 +51,26 @@ app.get('/todos/:id',(req,res)=>{
   }).catch((err)=>{
     res.send(err)
   })
+})
 
+//REMOVE /todos/:id
+app.delete('/todos/:id',(req,res)=>{
+  //get the id
+  var id = req.params.id;
+  //validate id
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send('404 Error. Make sure your url is correct')
+  }
 
+  Todo.findByIdAndRemove(id).then((todo)=>{
+    if(!todo){
+      return res.status(404).send(`There is no record for this ID`);
+    }
 
-  //findByID //success => todo?sendback:send 404 with empty
-  //error 400 and send empty body back
-
+    res.send(todo);
+  }).catch((err)=>{
+    res.status(400).send(err);
+  })
 })
 
 app.get('/',(req,res)=>{
@@ -67,4 +81,4 @@ app.listen(port, ()=>{
   console.log(`Starting server at port ${port}` );
 })
 
-module.exports = {app}
+module.exports = {app} //export for testing purpose
