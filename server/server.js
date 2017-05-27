@@ -1,3 +1,4 @@
+const _ = require('lodash');
 var express = require('express');
 var bodyParser = require('body-parser'); //take json and convert into object
 var {ObjectID} = require('mongodb')
@@ -70,6 +71,37 @@ app.delete('/todos/:id',(req,res)=>{
     res.send({todo});
   }).catch((err)=>{
     res.status(400).send(err);
+  })
+})
+
+//use app.patch to update a record
+app.patch('/todos/:id',(req,res)=>{
+  var id = req.params.id;
+  console.log(id);
+  console.log(req);
+  //dont let user update anything they choose body = {'text','complete'}
+  var body = _.pick(req.body,['text','completed']);
+
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send('not valid ID');
+  }
+
+  //based on completed status
+  if(_.isBoolean(body.completed) && body.completed){
+    body.comopletedAt = new Date().getTime();
+  }else{
+    body.completed = false;
+    body.completedAt = null;
+  }
+  // update the record to the body object with text and completed
+  Todo.findByIdAndUpdate(id,{$set:body},{new: true}).then((todo)=>{
+    if(!todo){
+      return res.status(404).send("no recrod found");
+    }
+    console.log(body);
+    res.send({todo});
+  }).catch((err)=>{
+    res.status(400).send("error loading");
   })
 })
 
