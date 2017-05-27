@@ -67,7 +67,7 @@ app.delete('/todos/:id',(req,res)=>{
       return res.status(404).send(`There is no record for this ID`);
     }
 
-    res.send(todo);
+    res.send({todo});
   }).catch((err)=>{
     res.status(400).send(err);
   })
